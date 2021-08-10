@@ -1,5 +1,6 @@
 {
   "credentials": [
-    { "service": "Google", "username": "julia", "password": "12345678" }
+    { "service": "Google", "username": "julia", "password": "12345678" },
+    { "service": "GitHub", "username": "julia", "password": "12345678" }
   ]
 }
