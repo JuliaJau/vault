@@ -1,8 +1,14 @@
 import express from 'express';
-import { getCredential, readCredentials } from './utils/credentials';
+import {
+  addCredential,
+  getCredential,
+  readCredentials,
+  deleteCredential,
+} from './utils/credentials';
 
 const app = express();
 const port = 3000;
+app.use(express.json());
 
 app.get('/api/credentials', async (_request, response) => {
   try {
@@ -12,6 +18,18 @@ app.get('/api/credentials', async (_request, response) => {
     console.error(error);
     response.status(500).send('Internal Server Error! Please try again later.');
   }
+});
+
+app.post('/api/credentials/', async (request, response) => {
+  const credential: Credential = request.body;
+  await addCredential(credential);
+  return response.status(200).send(credential);
+});
+
+app.delete('/api/credentials/:service', async (request, response) => {
+  const { service } = request.params;
+  await deleteCredential(service);
+  response.status(200).send('DELETED');
 });
 
 app.get('/api/credentials/:service', async (request, response) => {
