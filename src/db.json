@@ -1,7 +1,30 @@
 {
   "credentials": [
-    { "service": "google", "username": "julia", "password": "12345678" },
-    { "service": "gitHub", "username": "julia", "password": "12345678" },
-    { "service": "xing", "username": "julia", "password": "12345678" }
+    {
+      "service": "gitHub",
+      "username": "julia",
+      "password": "12345678"
+    },
+    {
+      "service": "xing",
+      "username": "julia",
+      "password": "12345678"
+    },
+    {},
+    {
+      "service": "neuefische",
+      "username": "julia",
+      "password": "alterfisch"
+    },
+    {
+      "service": "facebook",
+      "username": "julia",
+      "password": "12345678"
+    },
+    {
+      "service": "facebook",
+      "username": "julia",
+      "password": "alterfisch"
+    }
   ]
 }

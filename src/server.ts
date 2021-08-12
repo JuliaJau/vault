@@ -1,9 +1,11 @@
 import express from 'express';
+import type { Credential } from './types';
 import {
   addCredential,
   getCredential,
   readCredentials,
   deleteCredential,
+  updateCredential,
 } from './utils/credentials';
 
 const app = express();
@@ -24,6 +26,18 @@ app.post('/api/credentials/', async (request, response) => {
   const credential: Credential = request.body;
   await addCredential(credential);
   return response.status(200).send(credential);
+});
+
+app.put('/api/credentials/:service', async (request, response) => {
+  const { service } = request.params;
+  const credential: Credential = request.body;
+  try {
+    await updateCredential(service, credential);
+    response.status(200).send(credential);
+  } catch (error) {
+    console.error(error);
+    response.status(404).send(`Could not find service: ${service}`);
+  }
 });
 
 app.delete('/api/credentials/:service', async (request, response) => {
