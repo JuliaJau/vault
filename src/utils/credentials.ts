@@ -1,6 +1,6 @@
-import { writeFile } from 'fs/promises';
-import { readFile } from 'fs/promises';
-import { DB, Credential } from '../types';
+import { writeFile, readFile } from 'fs/promises';
+import type { DB, Credential } from '../types';
+import { decryptCredential, encryptCredential } from './crypto';
 
 export async function readCredentials(): Promise<Credential[]> {
   const response = await readFile('./src/db.json', 'utf-8');
@@ -18,14 +18,16 @@ export async function getCredential(service: string): Promise<Credential> {
   if (!credential) {
     throw new Error(`No credential found for service: $(service)`);
   }
-  return credential;
+  const decryptedCredential = decryptCredential(credential);
+
+  return decryptedCredential;
 }
 
 export async function addCredential(credential: Credential): Promise<void> {
   // reads all creds from db
   const credentials = await readCredentials();
   // spreads all old creds and adds new creds and creates array of them
-  const newCredentials = [...credentials, credential];
+  const newCredentials = [...credentials, encryptCredential(credential)];
   // the key we fill with information. in this key we give all our info
   const newDB: DB = {
     credentials: newCredentials,
