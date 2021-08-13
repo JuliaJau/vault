@@ -1,6 +1,7 @@
 import express from 'express';
+import dotenv from 'dotenv';
+dotenv.config();
 
-import type { Credential } from './types';
 import {
   addCredential,
   getCredential,
@@ -8,6 +9,9 @@ import {
   deleteCredential,
   updateCredential,
 } from './utils/credentials';
+
+import { validateMasterpassword } from './utils/validation';
+import type { Credential } from './types';
 
 const app = express();
 const port = 3000;
@@ -23,10 +27,38 @@ app.get('/api/credentials', async (_request, response) => {
   }
 });
 
-app.post('/api/credentials/', async (request, response) => {
+app.post('/api/credentials', async (request, response) => {
   const credential: Credential = request.body;
-  await addCredential(credential);
+  const masterPassword = request.headers.authorization;
+  if (!masterPassword) {
+    response.status(400).send('Authorization header missing');
+    return;
+  } else if (!(await validateMasterpassword(masterPassword))) {
+    response.status(401).send('Unauthorized request');
+    return;
+  }
+  await addCredential(credential, masterPassword);
   return response.status(200).send(credential);
+});
+
+app.get('/api/credentials/:service', async (request, response) => {
+  const { service } = request.params;
+  const masterPassword = request.headers.authorization;
+  if (!masterPassword) {
+    response.status(400).send('Authorization header missing');
+    return;
+  } else if (!(await validateMasterpassword(masterPassword))) {
+    response.status(401).send('Unauthorized request');
+    return;
+  }
+
+  try {
+    const credential = await getCredential(service, masterPassword);
+    response.status(200).json(credential);
+  } catch (error) {
+    console.error(error);
+    response.status(404).send(`Could not find service: ${service}`);
+  }
 });
 
 app.put('/api/credentials/:service', async (request, response) => {
@@ -45,17 +77,6 @@ app.delete('/api/credentials/:service', async (request, response) => {
   const { service } = request.params;
   await deleteCredential(service);
   response.status(200).send('DELETED');
-});
-
-app.get('/api/credentials/:service', async (request, response) => {
-  const { service } = request.params;
-  try {
-    const credential = await getCredential(service);
-    response.status(200).json(credential);
-  } catch (error) {
-    console.error(error);
-    response.status(404).send(`Could not find service: ${service}`);
-  }
 });
 
 app.get('/', (_request, response) => {
