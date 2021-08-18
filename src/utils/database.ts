@@ -12,6 +12,6 @@ export function getCollection<T>(name: string): Collection<T> {
   return client.db().collection<T>(name);
 }
 
-export function getCredential(): Collection<Credential> {
+export function getCredentialCollection(): Collection<Credential> {
   return getCollection<Credential>('credentials');
 }
