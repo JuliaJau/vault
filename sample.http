@@ -2,30 +2,33 @@
 GET http://localhost:3000/api/credentials
 
 ### Get single credential
-GET http://localhost:3000/api/credentials/neuefische
+GET http://localhost:3000/api/credentials/altefische
 Authorization: {{$dotenv MASTERPASSWORD}}
 
 ### Add single credential
 POST http://localhost:3000/api/credentials
+Authorization: {{$dotenv MASTERPASSWORD}}
 Content-Type: application/json
 
 {
-"service": "neuefische",
-"username": "julia",
-"password": "alterfisch"
+"service": "turbofische",
+    "username": "julia",
+    "password": "neuerfisch"
 
 }
 
 ###Delete single credential
-DELETE http://localhost:3000/api/credentials/neuefische
+DELETE http://localhost:3000/api/credentials/turbofische
 
-###Update single credential
-PUT http://localhost:3000/api/credentials/google
+
+### Modify existing credential
+PATCH http://localhost:3000/api/credentials/turbofische
+Authorization: {{$dotenv MASTERPASSWORD}}
 Content-Type: application/json
 
 {
-"service": "facebook",
+"service": "turbofische",
 "username": "julia",
-"password": "alterfisch"
+"password": "geheimfisch"
 
 }
